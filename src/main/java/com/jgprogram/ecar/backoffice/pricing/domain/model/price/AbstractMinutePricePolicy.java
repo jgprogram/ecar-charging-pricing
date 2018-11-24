@@ -24,9 +24,9 @@ public abstract class AbstractMinutePricePolicy extends DomainPolicy implements 
 
     @Override
     public Money apply(LocalDateTime forDataTime) {
-        final LocalTime forTime = forDataTime.toLocalTime();
+        final LocalTime timeToCalc = forDataTime.toLocalTime();
         Money price = rules.stream()
-                .filter(r -> isTimeInRule(forTime, r))
+                .filter(r -> isTimeInRule(timeToCalc, r))
                 .findAny()
                 .map(MinutePriceRule::price)
                 .orElse(new Money(0D, "EUR"));
@@ -34,8 +34,8 @@ public abstract class AbstractMinutePricePolicy extends DomainPolicy implements 
         return price;
     }
 
-    private boolean isTimeInRule(LocalTime forTime, MinutePriceRule r) {
-        return (r.start().isBefore(forTime) || r.start().equals(forTime))
-                && (r.end().isAfter(forTime) || r.end().equals(forTime));
+    private boolean isTimeInRule(LocalTime time, MinutePriceRule r) {
+        return (r.start().isBefore(time) || r.start().equals(time))
+                && (r.end().isAfter(time) || r.end().equals(time));
     }
 }
