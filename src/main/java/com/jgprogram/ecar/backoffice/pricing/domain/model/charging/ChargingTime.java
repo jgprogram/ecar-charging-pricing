@@ -2,6 +2,7 @@ package com.jgprogram.ecar.backoffice.pricing.domain.model.charging;
 
 import com.jgprogram.common.domain.model.ValueObject;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class ChargingTime extends ValueObject {
@@ -19,5 +20,10 @@ public class ChargingTime extends ValueObject {
 
     public LocalDateTime stop() {
         return stop;
+    }
+
+    public Long durationInMinutes() {
+        return Duration.between(start(), stop())
+                .toMinutes();
     }
 }
