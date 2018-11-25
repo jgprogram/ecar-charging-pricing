@@ -10,22 +10,22 @@ class PricePolicySpec extends Specification {
 
     def beforeNoonPrice = new Money(0.05, "EUR")
     def afterNoonPrice = new Money(0.06, "EUR")
-    def pricePolicy = new AbstractMinutePricePolicy(Arrays.asList(
-            new MinutePriceRule(
+    def pricePolicy = new AbstractTimePricePolicy(Arrays.asList(
+            new TimePriceRule(
                     LocalTime.of(0, 0),
                     LocalTime.of(11, 59),
                     new Money(0.05, "EUR")),
-            new MinutePriceRule(
+            new TimePriceRule(
                     LocalTime.of(12, 0),
                     LocalTime.of(23, 59),
                     new Money(0.06, "EUR"))
     )) {}
 
-    def "should create minute price policy contains before noon rule and afternoon rule"() {
+    def "should create time price policy contains before noon rule and afternoon rule"() {
         given:
-        def beforeNoonRule = new MinutePriceRule(
+        def beforeNoonRule = new TimePriceRule(
                 LocalTime.of(0, 0), LocalTime.of(11, 59), beforeNoonPrice)
-        def afterNoonRule = new MinutePriceRule(
+        def afterNoonRule = new TimePriceRule(
                 LocalTime.of(12, 0), LocalTime.of(23, 59), afterNoonPrice)
 
         expect:
@@ -34,7 +34,7 @@ class PricePolicySpec extends Specification {
         pricePolicy.rules()[1] == afterNoonRule
     }
 
-    def "should apply before noon rule from minute price policy"() {
+    def "should apply before noon rule from time price policy"() {
         given:
         def dateTimeBeforeNoon = LocalDateTime.of(2018, 1, 1, 8, 30)
 
@@ -45,7 +45,7 @@ class PricePolicySpec extends Specification {
         price == beforeNoonPrice
     }
 
-    def "should apply afternoon rule from minute price policy"() {
+    def "should apply afternoon rule from time price policy"() {
         given:
         def dateTimeAfterNoon = LocalDateTime.of(2018, 1, 1, 21, 31)
 

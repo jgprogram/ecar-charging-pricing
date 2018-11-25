@@ -10,15 +10,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractMinutePricePolicy extends DomainPolicy implements PricePolicy {
+public abstract class AbstractTimePricePolicy extends DomainPolicy implements PricePolicy {
 
-    private List<MinutePriceRule> rules;
+    private List<TimePriceRule> rules;
 
-    protected AbstractMinutePricePolicy(Collection<MinutePriceRule> rules) {
+    protected AbstractTimePricePolicy(Collection<TimePriceRule> rules) {
         this.rules = new ArrayList<>(rules);
     }
 
-    Collection<MinutePriceRule> rules() {
+    Collection<TimePriceRule> rules() {
         return Collections.unmodifiableList(rules);
     }
 
@@ -28,13 +28,13 @@ public abstract class AbstractMinutePricePolicy extends DomainPolicy implements 
         Money price = rules.stream()
                 .filter(r -> isTimeInRule(timeToCalc, r))
                 .findAny()
-                .map(MinutePriceRule::price)
+                .map(TimePriceRule::price)
                 .orElse(new Money(0D, "EUR"));
 
         return price;
     }
 
-    private boolean isTimeInRule(LocalTime time, MinutePriceRule r) {
+    private boolean isTimeInRule(LocalTime time, TimePriceRule r) {
         return (r.start().isBefore(time) || r.start().equals(time))
                 && (r.end().isAfter(time) || r.end().equals(time));
     }
