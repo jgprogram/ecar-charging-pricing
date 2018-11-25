@@ -9,9 +9,14 @@ import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolic
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicyFactory;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicy;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicyFactory;
+import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingData;
+import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -27,7 +32,7 @@ public class PricingService {
         this.discountPolicyFactory = discountPolicyFactory;
     }
 
-    public ChargingPricing calculate(ChargingPricingRequest request) {
+    public ChargingPricingData calculate(ChargingPricingRequest request) {
         CustomerId customerId = new CustomerId(request.getCustomerId());
         ChargingTime chargingTime = new ChargingTime(request.getStartCharging(), request.getStopCharging());
         PricePolicy pricePolicy = pricePolicyFactory.create();
@@ -37,11 +42,30 @@ public class PricingService {
         DiscountPolicy discountPolicy = discountPolicyFactory.createFor(customerId);
         totalPrice = discountPolicy.apply(totalPrice);
 
-        return new ChargingPricing(
+        ChargingPricing chargingPricing = new ChargingPricing(
                 new ChargingPricingId(UUID.randomUUID().toString()),
                 chargingTime,
                 customerId,
                 totalPrice
         );
+
+        // TODO - repository add charging pricing
+
+        return mapToChargingPricingData(chargingPricing);
+    }
+
+    private ChargingPricingData mapToChargingPricingData(ChargingPricing chargingPricing) {
+        return new ChargingPricingData(
+                chargingPricing.totalPrice().currency(),
+                chargingPricing.customerId().id(),
+                chargingPricing.chargingPricingId().id(),
+                toDate(chargingPricing.chargingTime().start()),
+                toDate(chargingPricing.chargingTime().stop()),
+                chargingPricing.totalPrice().doubleValue()
+        );
+    }
+
+    private Date toDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

@@ -37,6 +37,14 @@ public class Money extends ValueObject {
         return new Money(value.multiply(BigDecimal.valueOf(multiplier)), currency);
     }
 
+    public String currency() {
+        return currency;
+    }
+
+    public Double doubleValue() {
+        return value.doubleValue();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -2,7 +2,6 @@ package com.jgprogram.ecar.backoffice.pricing.application
 
 import com.jgprogram.common.domain.model.Money
 import com.jgprogram.ecar.backoffice.pricing.domain.model.CustomerId
-import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricing
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingTime
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicy
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicyFactory
@@ -10,10 +9,9 @@ import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.NoDiscountPol
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.VIPDiscountPolicy
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicy
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicyFactory
-
+import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingData
+import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingRequest
 import spock.lang.*
-
-import static java.time.LocalDateTime.of
 
 class PricingServiceSpec extends Specification implements SpecHelper {
 
@@ -44,14 +42,15 @@ class PricingServiceSpec extends Specification implements SpecHelper {
         def chargingPricingRequest = chargingPricingRequest()
 
         when:
-        ChargingPricing pricing = pricingService.calculate(chargingPricingRequest)
+        ChargingPricingData pricing = pricingService.calculate(chargingPricingRequest)
 
         then:
-        pricing.chargingPricingId() != null
-        pricing.chargingTime().start() == chargingPricingRequest.getStartCharging()
-        pricing.chargingTime().stop() == chargingPricingRequest.getStopCharging()
-        pricing.customerId() == new CustomerId(chargingPricingRequest.getCustomerId())
-        pricing.totalPrice() == _0_EUR
+        pricing.getId() != null
+        pricing.getStartCharging() == chargingPricingRequest.getStartCharging()
+        pricing.getStopCharging() == chargingPricingRequest.getStopCharging()
+        pricing.getCustomerId() == chargingPricingRequest.getCustomerId()
+        pricing.getTotalPrice() == _0_EUR.doubleValue()
+        pricing.getCurrency() == _0_EUR.currency()
     }
 
     def "should calculate charging pricing request for vip customer"() {
@@ -60,7 +59,7 @@ class PricingServiceSpec extends Specification implements SpecHelper {
         discountPolicyFactory.createFor(_ as CustomerId) >> new VIPDiscountPolicy()
 
         expect:
-        pricingService.calculate(chargingPricingRequest()).totalPrice() == _9_EUR
+        pricingService.calculate(chargingPricingRequest()).getTotalPrice() == _9_EUR.doubleValue()
     }
 
     def "should calculate charging pricing request for normal customer"() {
@@ -69,14 +68,14 @@ class PricingServiceSpec extends Specification implements SpecHelper {
         discountPolicyFactory.createFor(_ as CustomerId) >> new NoDiscountPolicy()
 
         expect:
-        pricingService.calculate(chargingPricingRequest()).totalPrice() == _10_EUR
+        pricingService.calculate(chargingPricingRequest()).getTotalPrice() == _10_EUR.doubleValue()
     }
 }
 
 trait SpecHelper {
     def chargingPricingRequest() {
-        def startCharging = of(2018, 1, 1, 20, 50)
-        def stopCharging = of(2018, 1, 1, 23, 50)
+        def startCharging = new Date()
+        def stopCharging = new Date()
         String customerId = "testCustomerId"
 
         return new ChargingPricingRequest(
