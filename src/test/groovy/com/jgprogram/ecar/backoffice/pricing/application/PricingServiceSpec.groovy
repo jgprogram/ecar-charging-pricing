@@ -1,32 +1,36 @@
 package com.jgprogram.ecar.backoffice.pricing.application
 
+import com.jgprogram.common.domain.model.Money
+import com.jgprogram.ecar.backoffice.pricing.domain.model.CustomerId
+import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricing
+import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicyFactory
 import spock.lang.Specification
 
 import java.time.LocalDateTime
 
 class PricingServiceSpec extends Specification {
 
-    def pricingService = new PricingService()
+    def pricingService = new PricingService(new PricePolicyFactory())
+    def eur_0 = new Money(0, "EUR")
 
-    def "should calculate charging pricing request"(startCharging, stopCharging, pricingValue) {
+    def "should calculate charging pricing request"() {
         given:
-        def chargingPricingRequest = new ChargingPricingRequest(
-                new CustomerId("testCustomerId"),
-                new ChargingTime(
-                        startCharging,
-                        stopCharging,
-                )
-        )
+        LocalDateTime startCharging
+        LocalDateTime stopCharging
+        String customerId = "testCustomerId"
 
         when:
-        Pricing pricing = pricingService.calculate(chargingPricingRequest)
+        ChargingPricing pricing = pricingService.calculate(new ChargingPricingRequest(
+                customerId,
+                startCharging,
+                stopCharging,
+        ))
 
         then:
-        pricing.id() != null
-        pricing.value() == pricingValue
-
-        where:
-        startCharging        | stopCharging      | pricingValue
-        LocalDateTime.of(2018, 1, 1, 9, 11)
+        pricing.chargingPricingId() != null
+        pricing.chargingTime().start() == startCharging
+        pricing.chargingTime().stop() == stopCharging
+        pricing.customerId() == new CustomerId(customerId)
+        pricing.totalPrice() == eur_0
     }
 }
