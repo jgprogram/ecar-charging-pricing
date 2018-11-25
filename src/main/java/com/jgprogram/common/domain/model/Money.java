@@ -26,6 +26,17 @@ public class Money extends ValueObject {
         return new Money(value.add(addend.value), currency);
     }
 
+    public Money subtract(Money subtrahend) {
+        assertArgumentEquals(this.currency, subtrahend.currency,
+                "Currency must equals.");
+
+        return new Money(value.subtract(subtrahend.value), currency);
+    }
+
+    public Money multiply(double multiplier) {
+        return new Money(value.multiply(BigDecimal.valueOf(multiplier)), currency);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

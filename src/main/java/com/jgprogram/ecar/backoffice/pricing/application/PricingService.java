@@ -5,6 +5,8 @@ import com.jgprogram.ecar.backoffice.pricing.domain.model.CustomerId;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricing;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricingId;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingTime;
+import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicy;
+import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicyFactory;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicy;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,13 @@ import java.util.UUID;
 public class PricingService {
 
     private final PricePolicyFactory pricePolicyFactory;
+    private final DiscountPolicyFactory discountPolicyFactory;
 
     @Autowired
-    public PricingService(PricePolicyFactory pricePolicyFactory) {
+    public PricingService(PricePolicyFactory pricePolicyFactory,
+                          DiscountPolicyFactory discountPolicyFactory) {
         this.pricePolicyFactory = pricePolicyFactory;
+        this.discountPolicyFactory = discountPolicyFactory;
     }
 
     public ChargingPricing calculate(ChargingPricingRequest request) {
@@ -28,6 +33,9 @@ public class PricingService {
         PricePolicy pricePolicy = pricePolicyFactory.create();
 
         Money totalPrice = pricePolicy.apply(chargingTime);
+
+        DiscountPolicy discountPolicy = discountPolicyFactory.createFor(customerId);
+        totalPrice = discountPolicy.apply(totalPrice);
 
         return new ChargingPricing(
                 new ChargingPricingId(UUID.randomUUID().toString()),
