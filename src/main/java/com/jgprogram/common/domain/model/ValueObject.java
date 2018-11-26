@@ -1,4 +1,4 @@
 package com.jgprogram.common.domain.model;
 
-public class ValueObject extends DomainObject {
+public abstract class ValueObject extends DomainObject {
 }

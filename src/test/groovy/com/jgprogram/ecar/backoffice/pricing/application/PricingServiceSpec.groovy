@@ -2,6 +2,8 @@ package com.jgprogram.ecar.backoffice.pricing.application
 
 import com.jgprogram.common.domain.model.Money
 import com.jgprogram.ecar.backoffice.pricing.domain.model.CustomerId
+import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricing
+import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricingRepository
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingTime
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicy
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicyFactory
@@ -24,15 +26,17 @@ class PricingServiceSpec extends Specification implements SpecHelper {
     DiscountPolicy mockDiscountPolicy
     DiscountPolicyFactory discountPolicyFactory
     PricingService pricingService
+    ChargingPricingRepository chargingPricingRepository;
 
     def setup() {
+        chargingPricingRepository = Mock()
         mockPricePolicy = Mock()
         pricePolicyFactory = Mock()
         pricePolicyFactory.create() >> mockPricePolicy
         mockDiscountPolicy = Mock()
         mockDiscountPolicy.apply(_ as Money) >> _0_EUR
         discountPolicyFactory = Mock()
-        pricingService = new PricingService(pricePolicyFactory, discountPolicyFactory)
+        pricingService = new PricingService(pricePolicyFactory, discountPolicyFactory, chargingPricingRepository, new ChargingPricingMapper())
     }
 
     def "should calculate charging pricing request"() {
@@ -45,6 +49,7 @@ class PricingServiceSpec extends Specification implements SpecHelper {
         ChargingPricingData pricing = pricingService.calculate(chargingPricingRequest)
 
         then:
+        1 * chargingPricingRepository.add(_ as ChargingPricing)
         pricing.getId() != null
         pricing.getStartCharging() == chargingPricingRequest.getStartCharging()
         pricing.getStopCharging() == chargingPricingRequest.getStopCharging()

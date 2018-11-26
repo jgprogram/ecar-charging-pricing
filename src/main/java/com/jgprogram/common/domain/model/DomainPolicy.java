@@ -1,4 +1,4 @@
 package com.jgprogram.common.domain.model;
 
-public class DomainPolicy extends DomainObject {
+public abstract class DomainPolicy extends DomainObject {
 }

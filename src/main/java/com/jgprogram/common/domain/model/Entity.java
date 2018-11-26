@@ -1,4 +1,4 @@
 package com.jgprogram.common.domain.model;
 
-public class Entity extends DomainObject {
+public abstract class Entity extends DomainObject {
 }

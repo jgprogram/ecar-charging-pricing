@@ -4,6 +4,7 @@ import com.jgprogram.common.domain.model.Money;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.CustomerId;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricing;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricingId;
+import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricingRepository;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingTime;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicy;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicyFactory;
@@ -14,9 +15,6 @@ import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -24,12 +22,18 @@ public class PricingService {
 
     private final PricePolicyFactory pricePolicyFactory;
     private final DiscountPolicyFactory discountPolicyFactory;
+    private final ChargingPricingRepository chargingPricingRepository;
+    private final ChargingPricingMapper chargingPricingMapper;
 
     @Autowired
     public PricingService(PricePolicyFactory pricePolicyFactory,
-                          DiscountPolicyFactory discountPolicyFactory) {
+                          DiscountPolicyFactory discountPolicyFactory,
+                          ChargingPricingRepository chargingPricingRepository,
+                          ChargingPricingMapper chargingPricingMapper) {
         this.pricePolicyFactory = pricePolicyFactory;
         this.discountPolicyFactory = discountPolicyFactory;
+        this.chargingPricingRepository = chargingPricingRepository;
+        this.chargingPricingMapper = chargingPricingMapper;
     }
 
     public ChargingPricingData calculate(ChargingPricingRequest request) {
@@ -49,23 +53,8 @@ public class PricingService {
                 totalPrice
         );
 
-        // TODO - repository add charging pricing
+        chargingPricingRepository.add(chargingPricing);
 
-        return mapToChargingPricingData(chargingPricing);
-    }
-
-    private ChargingPricingData mapToChargingPricingData(ChargingPricing chargingPricing) {
-        return new ChargingPricingData(
-                chargingPricing.totalPrice().currency(),
-                chargingPricing.customerId().id(),
-                chargingPricing.chargingPricingId().id(),
-                toDate(chargingPricing.chargingTime().start()),
-                toDate(chargingPricing.chargingTime().stop()),
-                chargingPricing.totalPrice().doubleValue()
-        );
-    }
-
-    private Date toDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        return chargingPricingMapper.map(chargingPricing);
     }
 }
