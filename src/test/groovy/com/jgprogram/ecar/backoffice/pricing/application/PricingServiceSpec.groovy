@@ -1,6 +1,7 @@
 package com.jgprogram.ecar.backoffice.pricing.application
 
 import com.jgprogram.common.domain.model.Money
+import com.jgprogram.common.exception.BusinessLogicException
 import com.jgprogram.ecar.backoffice.pricing.domain.model.CustomerId
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricing
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricingRepository
@@ -17,9 +18,11 @@ import spock.lang.*
 
 class PricingServiceSpec extends Specification implements SpecHelper {
 
-    def _0_EUR = new Money(0, "EUR")
-    def _9_EUR = new Money(9, "EUR")
-    def _10_EUR = new Money(10, "EUR")
+    static _0_EUR = new Money(0, "EUR")
+    static _9_EUR = new Money(9, "EUR")
+    static _10_EUR = new Money(10, "EUR")
+    static _2018_11_26_18_00 = new Date(1543255200000)
+    static _2018_11_26_19_00 = new Date(1543258800000)
 
     PricePolicy mockPricePolicy
     PricePolicyFactory pricePolicyFactory
@@ -74,6 +77,25 @@ class PricingServiceSpec extends Specification implements SpecHelper {
 
         expect:
         pricingService.calculate(chargingPricingRequest()).getTotalPrice() == _10_EUR.doubleValue()
+    }
+
+    def "should throw business logic exception when pass invalid data to calculation"(String customerId, Date start, Date stop) {
+        given:
+        def request = new ChargingPricingRequest(customerId, start, stop)
+
+        when:
+        pricingService.calculate(request)
+
+        then:
+        thrown(BusinessLogicException)
+
+        where:
+        customerId | start             | stop
+        null       | _2018_11_26_18_00 | _2018_11_26_19_00
+        ""         | _2018_11_26_18_00 | _2018_11_26_19_00
+        "testID"   | null              | _2018_11_26_19_00
+        "testID"   | _2018_11_26_18_00 | null
+        "testID"   | _2018_11_26_19_00 | _2018_11_26_18_00
     }
 }
 

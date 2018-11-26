@@ -1,5 +1,9 @@
 package com.jgprogram.ecar.backoffice.pricing.integration;
 
+import com.jgprogram.common.exception.BusinessLogicException;
+import com.jgprogram.ecar.backoffice.pricing.application.PricingService;
+import com.jgprogram.ecar.backoffice.pricing.infra.rest.PricingController;
+import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +13,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -63,5 +70,22 @@ public class PricingControllerIT {
                 .andExpect(jsonPath("$.startCharging", is(startCharging)))
                 .andExpect(jsonPath("$.stopCharging", is(stopCharging)))
                 .andExpect(jsonPath("$.totalPrice", is(0.09)));
+    }
+
+    @Test
+    public void when_getPricingAndBusinessLogicException_thenStatusBadRequestAndMessage() throws Exception {
+        PricingService pricingService = mock(PricingService.class);
+        when(pricingService.calculate(any(ChargingPricingRequest.class)))
+                .thenThrow(new BusinessLogicException("BUSINESS_EXCEPTION"));
+        PricingController pricingController = new PricingController(pricingService);
+
+
+        MockMvcBuilders.standaloneSetup(pricingController).build()
+                .perform(
+                        get("/pricing")
+                                .param("customerId", "1234")
+                                .param("startCharging", "2018-10-25T11:58")
+                                .param("stopCharging", "2018-10-25T11:58"))
+                .andExpect(status().isBadRequest());
     }
 }

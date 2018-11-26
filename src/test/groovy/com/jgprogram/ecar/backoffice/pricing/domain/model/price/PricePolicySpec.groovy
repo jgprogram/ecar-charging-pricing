@@ -11,8 +11,9 @@ import static java.time.LocalDateTime.of
 
 class PricePolicySpec extends Specification {
 
-    def beforeNoonPrice = new Money(0.05, "EUR")
-    def afterNoonPrice = new Money(0.06, "EUR")
+    static beforeNoonPrice = new Money(0.05, "EUR")
+    static afterNoonPrice = new Money(0.06, "EUR")
+
     def pricePolicy = new AbstractTimePricePolicy(Arrays.asList(
             new TimePriceRule(
                     LocalTime.of(0, 0),

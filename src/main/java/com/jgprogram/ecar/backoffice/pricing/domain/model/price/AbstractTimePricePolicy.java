@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public abstract class AbstractTimePricePolicy extends DomainPolicy implements PricePolicy {
 
-    private List<TimePriceRule> rules;
+    private final List<TimePriceRule> rules;
 
     protected AbstractTimePricePolicy(Collection<TimePriceRule> rules) {
         this.rules = new ArrayList<>(rules);
