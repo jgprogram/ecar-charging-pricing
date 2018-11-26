@@ -10,7 +10,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Component
-public class ChargingPricingMapper implements Mapper<ChargingPricing, ChargingPricingData> {
+class ChargingPricingMapper implements Mapper<ChargingPricing, ChargingPricingData> {
 
     @Override
     public ChargingPricingData map(ChargingPricing source) {
