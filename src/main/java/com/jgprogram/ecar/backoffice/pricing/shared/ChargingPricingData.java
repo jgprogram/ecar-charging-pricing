@@ -1,12 +1,21 @@
 package com.jgprogram.ecar.backoffice.pricing.shared;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.jgprogram.common.jackson.DomainDateDeserializer;
+import com.jgprogram.common.jackson.DomainDateSerializer;
+
 import java.util.Date;
 
 public class ChargingPricingData {
     private String currency;
     private String customerId;
     private String id;
+    @JsonSerialize(using = DomainDateSerializer.class)
+    @JsonDeserialize(using = DomainDateDeserializer.class)
     private Date startCharging;
+    @JsonSerialize(using = DomainDateSerializer.class)
+    @JsonDeserialize(using = DomainDateDeserializer.class)
     private Date stopCharging;
     private Double totalPrice;
 
