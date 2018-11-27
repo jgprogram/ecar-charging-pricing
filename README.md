@@ -13,8 +13,8 @@ App requires JRE 8
 
 This example implements default price policy with rules below and 10% discount policy for VIP customer.
 
- - 00:00 - 11:59 | 0.05 EUR
- - 12:00 - 23:59 | 0.06 EUR
+ - 00:00 - 11:59 | 0.05 EUR per min
+ - 12:00 - 23:59 | 0.06 EUR per min
 
 For VIP customer use `customerId=VIP-ID`
 
