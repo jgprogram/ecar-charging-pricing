@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-public abstract class AbstractTimePricePolicy extends DomainPolicy implements PricePolicy {
+abstract class AbstractTimePricePolicy extends DomainPolicy implements PricePolicy {
 
     private final List<TimePriceRule> rules;
 

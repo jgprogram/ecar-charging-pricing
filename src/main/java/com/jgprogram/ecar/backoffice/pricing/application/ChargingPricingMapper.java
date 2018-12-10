@@ -2,14 +2,11 @@ package com.jgprogram.ecar.backoffice.pricing.application;
 
 import com.jgprogram.common.utils.Mapper;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricing;
-import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingData;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-@Component
 class ChargingPricingMapper implements Mapper<ChargingPricing, ChargingPricingData> {
 
     @Override

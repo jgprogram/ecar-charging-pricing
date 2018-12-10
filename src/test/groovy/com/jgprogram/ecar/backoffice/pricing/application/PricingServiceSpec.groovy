@@ -12,8 +12,6 @@ import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.NoDiscountPol
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.VIPDiscountPolicy
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicy
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicyFactory
-import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingData
-import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingRequest
 import spock.lang.*
 
 class PricingServiceSpec extends Specification implements SpecHelper {
@@ -39,7 +37,7 @@ class PricingServiceSpec extends Specification implements SpecHelper {
         mockDiscountPolicy = Mock()
         mockDiscountPolicy.apply(_ as Money) >> _0_EUR
         discountPolicyFactory = Mock()
-        pricingService = new PricingService(pricePolicyFactory, discountPolicyFactory, chargingPricingRepository, new ChargingPricingMapper())
+        pricingService = new PricingService(pricePolicyFactory, discountPolicyFactory, chargingPricingRepository)
     }
 
     def "should calculate charging pricing request"() {

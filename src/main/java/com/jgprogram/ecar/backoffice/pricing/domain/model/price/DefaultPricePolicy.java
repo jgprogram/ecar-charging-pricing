@@ -5,9 +5,9 @@ import com.jgprogram.common.domain.model.Money;
 import java.time.LocalTime;
 import java.util.*;
 
-public class DefaultPricePolicy extends AbstractTimePricePolicy {
+class DefaultPricePolicy extends AbstractTimePricePolicy {
 
-    public DefaultPricePolicy() {
+    DefaultPricePolicy() {
         super(Arrays.asList(
                 new TimePriceRule(
                         LocalTime.of(0, 0),

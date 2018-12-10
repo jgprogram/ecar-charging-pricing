@@ -1,4 +1,4 @@
-package com.jgprogram.ecar.backoffice.pricing.shared;
+package com.jgprogram.ecar.backoffice.pricing.application;
 
 import java.util.Date;
 

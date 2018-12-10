@@ -10,8 +10,6 @@ import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolic
 import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicyFactory;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicy;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicyFactory;
-import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingData;
-import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +21,15 @@ public class PricingService {
     private final PricePolicyFactory pricePolicyFactory;
     private final DiscountPolicyFactory discountPolicyFactory;
     private final ChargingPricingRepository chargingPricingRepository;
-    private final ChargingPricingMapper chargingPricingMapper;
+    private final ChargingPricingMapper chargingPricingMapper = new ChargingPricingMapper();
 
     @Autowired
     public PricingService(PricePolicyFactory pricePolicyFactory,
                           DiscountPolicyFactory discountPolicyFactory,
-                          ChargingPricingRepository chargingPricingRepository,
-                          ChargingPricingMapper chargingPricingMapper) {
+                          ChargingPricingRepository chargingPricingRepository) {
         this.pricePolicyFactory = pricePolicyFactory;
         this.discountPolicyFactory = discountPolicyFactory;
         this.chargingPricingRepository = chargingPricingRepository;
-        this.chargingPricingMapper = chargingPricingMapper;
     }
 
     public ChargingPricingData calculate(ChargingPricingRequest request) {

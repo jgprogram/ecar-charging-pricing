@@ -1,7 +1,7 @@
 package com.jgprogram.ecar.backoffice.pricing.infra.rest;
 
-import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingData;
-import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingRequest;
+import com.jgprogram.ecar.backoffice.pricing.application.ChargingPricingData;
+import com.jgprogram.ecar.backoffice.pricing.application.ChargingPricingRequest;
 import com.jgprogram.ecar.backoffice.pricing.application.PricingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

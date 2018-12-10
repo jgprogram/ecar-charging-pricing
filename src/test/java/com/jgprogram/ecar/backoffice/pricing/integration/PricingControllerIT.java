@@ -3,7 +3,7 @@ package com.jgprogram.ecar.backoffice.pricing.integration;
 import com.jgprogram.common.exception.BusinessLogicException;
 import com.jgprogram.ecar.backoffice.pricing.application.PricingService;
 import com.jgprogram.ecar.backoffice.pricing.infra.rest.PricingController;
-import com.jgprogram.ecar.backoffice.pricing.shared.ChargingPricingRequest;
+import com.jgprogram.ecar.backoffice.pricing.application.ChargingPricingRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
