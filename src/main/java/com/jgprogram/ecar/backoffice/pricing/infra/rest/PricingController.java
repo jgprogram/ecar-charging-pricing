@@ -30,7 +30,7 @@ public class PricingController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd\'T\'HH:mm") Date startCharging,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd\'T\'HH:mm") Date stopCharging
     ) {
-        ChargingPricingData chargingPricingData = pricingService.calculate(
+        ChargingPricingData chargingPricingData = pricingService.createPricing(
                 new ChargingPricingRequest(
                         customerId,
                         startCharging,

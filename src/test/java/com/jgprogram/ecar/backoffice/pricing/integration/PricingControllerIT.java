@@ -75,7 +75,7 @@ public class PricingControllerIT {
     @Test
     public void when_getPricingAndBusinessLogicException_thenStatusBadRequestAndMessage() throws Exception {
         PricingService pricingService = mock(PricingService.class);
-        when(pricingService.calculate(any(ChargingPricingRequest.class)))
+        when(pricingService.createPricing(any(ChargingPricingRequest.class)))
                 .thenThrow(new BusinessLogicException("BUSINESS_EXCEPTION"));
         PricingController pricingController = new PricingController(pricingService);
 

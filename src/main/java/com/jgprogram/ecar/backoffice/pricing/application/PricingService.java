@@ -2,14 +2,7 @@ package com.jgprogram.ecar.backoffice.pricing.application;
 
 import com.jgprogram.common.domain.model.Money;
 import com.jgprogram.ecar.backoffice.pricing.domain.model.CustomerId;
-import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricing;
-import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricingId;
-import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingPricingRepository;
-import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.ChargingTime;
-import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicy;
-import com.jgprogram.ecar.backoffice.pricing.domain.model.discount.DiscountPolicyFactory;
-import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicy;
-import com.jgprogram.ecar.backoffice.pricing.domain.model.price.PricePolicyFactory;
+import com.jgprogram.ecar.backoffice.pricing.domain.model.charging.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,29 +11,21 @@ import java.util.UUID;
 @Service
 public class PricingService {
 
-    private final PricePolicyFactory pricePolicyFactory;
-    private final DiscountPolicyFactory discountPolicyFactory;
+    private final ChargingPricingService chargingPricingService;
     private final ChargingPricingRepository chargingPricingRepository;
     private final ChargingPricingMapper chargingPricingMapper = new ChargingPricingMapper();
 
     @Autowired
-    public PricingService(PricePolicyFactory pricePolicyFactory,
-                          DiscountPolicyFactory discountPolicyFactory,
+    public PricingService(ChargingPricingService chargingPricingService,
                           ChargingPricingRepository chargingPricingRepository) {
-        this.pricePolicyFactory = pricePolicyFactory;
-        this.discountPolicyFactory = discountPolicyFactory;
+        this.chargingPricingService = chargingPricingService;
         this.chargingPricingRepository = chargingPricingRepository;
     }
 
-    public ChargingPricingData calculate(ChargingPricingRequest request) {
+    public ChargingPricingData createPricing(ChargingPricingRequest request) {
         CustomerId customerId = new CustomerId(request.getCustomerId());
         ChargingTime chargingTime = new ChargingTime(request.getStartCharging(), request.getStopCharging());
-        PricePolicy pricePolicy = pricePolicyFactory.create();
-
-        Money totalPrice = pricePolicy.apply(chargingTime);
-
-        DiscountPolicy discountPolicy = discountPolicyFactory.createFor(customerId);
-        totalPrice = discountPolicy.apply(totalPrice);
+        Money totalPrice = chargingPricingService.calculateTotalPrice(customerId, chargingTime);
 
         ChargingPricing chargingPricing = new ChargingPricing(
                 new ChargingPricingId(UUID.randomUUID().toString()),
