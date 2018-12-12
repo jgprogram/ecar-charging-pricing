@@ -4,7 +4,7 @@ Backoffice supporting electric vehicles charging network.
 
 ## How to run
 
-App requires JRE 8
+App requires JRE 8 and free 8080 port
 
  1. Build app using gradle wrapper.
  2. Execute command `java -Dspring.profiles.active=in-memory -jar build/libs/pricing-0.0.1-SNAPSHOT.jar`
